@@ -1,7 +1,7 @@
 import React from 'react'
 import TrialBanner from './components/TrialBanner'
-import Navbar from './components/Navbar'
 import Hero from './components/Hero'
+import Navbar from './components/Navbar'
 
 const App = () => {
   return (
