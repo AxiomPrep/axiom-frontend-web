@@ -1,41 +1,52 @@
 import React from 'react'
 import TestimonialCard from './TestimonialCard'
+import { ShieldCheck, Award } from 'lucide-react'
 
 const testimonials = [
   {
     id: 'ABJ',
     initials: 'ABJ',
     name: 'ABJ Sir',
-    credentials: 'Co-founder, Competishun · IIT Delhi · 16+ yrs in Physics',
+    credentials: 'Co-founder, Competishun · IIT Delhi Alumnus · 16+ yrs in Physics',
+    quote: 'Axiom provides students with precisely curated question sets and analytical rigor needed to clear JEE Advanced physics with top ranks.',
   },
   {
     id: 'GB',
     initials: 'GB',
     name: 'Gaveesh Bhardwaj (GB) Sir',
-    credentials: 'Co-founder, IIT School · 24+ yrs experience',
+    credentials: 'Co-founder, IIT School · 24+ yrs Experience in Mathematics',
+    quote: 'The PYQ categorization and step-by-step problem breakdown in Axiom make organic revision fast and bulletproof.',
   },
 ]
 
 const ValidationSection = () => {
   return (
-    <div>
+    <div className="relative mt-8">
       {/* Divider */}
-      <div className="relative mb-14 flex items-center justify-center">
-        <div className="h-px w-full bg-linear-to-r from-transparent via-amber-500/40 to-transparent"></div>
+      <div className="relative mb-12 flex items-center justify-center">
+        <div className="h-px w-full bg-linear-to-r from-transparent via-amber-500/30 to-transparent"></div>
+        <div className="absolute rounded-full border border-amber-500/30 bg-neutral-950 px-4 py-1 text-[11px] font-bold tracking-widest text-amber-400 uppercase shadow-md flex items-center gap-1.5">
+          <Award className="h-3.5 w-3.5 text-amber-400" />
+          <span>Faculty Endorsed</span>
+        </div>
       </div>
 
       <div className="text-center">
-        <h2 className="mb-10 text-xs font-semibold uppercase tracking-[0.2em] text-amber-500/70">
-          Validated &amp; appreciated by
-        </h2>
+        <div className="mb-8 flex items-center justify-center gap-2">
+          <ShieldCheck className="h-4 w-4 text-amber-400" />
+          <h2 className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400/90">
+            Validated &amp; Recommended By Top Educators
+          </h2>
+        </div>
 
-        <div className="mx-auto flex max-w-4xl flex-wrap items-stretch justify-center gap-6">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-stretch justify-center gap-6">
           {testimonials.map((testimonial) => (
             <TestimonialCard
               key={testimonial.id}
               initials={testimonial.initials}
               name={testimonial.name}
               credentials={testimonial.credentials}
+              quote={testimonial.quote}
             />
           ))}
         </div>
@@ -45,3 +56,4 @@ const ValidationSection = () => {
 }
 
 export default ValidationSection
+
