@@ -1,7 +1,9 @@
+import Link from 'next/link'
 import { Atom, FlaskConical, Calculator, Dna } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 interface Subject {
+  id: string
   name: string
   icon: LucideIcon
   count: string
@@ -10,10 +12,10 @@ interface Subject {
 }
 
 const subjects: Subject[] = [
-  { name: 'Physics', icon: Atom, count: '14,200+ Qs', formula: 'F = m·a', color: 'from-amber-500/20 to-orange-500/10' },
-  { name: 'Chemistry', icon: FlaskConical, count: '11,800+ Qs', formula: 'PV = nRT', color: 'from-yellow-500/20 to-amber-500/10' },
-  { name: 'Mathematics', icon: Calculator, count: '16,500+ Qs', formula: 'e^(iπ) + 1 = 0', color: 'from-amber-600/20 to-orange-600/10' },
-  { name: 'Biology', icon: Dna, count: '12,900+ Qs', formula: 'ATP ↔ ADP', color: 'from-orange-500/20 to-amber-500/10' },
+  { id: 'physics', name: 'Physics', icon: Atom, count: '14,200+ Qs', formula: 'F = m·a', color: 'from-amber-500/20 to-orange-500/10' },
+  { id: 'chemistry', name: 'Chemistry', icon: FlaskConical, count: '11,800+ Qs', formula: 'PV = nRT', color: 'from-yellow-500/20 to-amber-500/10' },
+  { id: 'mathematics', name: 'Mathematics', icon: Calculator, count: '16,500+ Qs', formula: 'e^(iπ) + 1 = 0', color: 'from-amber-600/20 to-orange-600/10' },
+  { id: 'biology', name: 'Biology', icon: Dna, count: '12,900+ Qs', formula: 'ATP ↔ ADP', color: 'from-orange-500/20 to-amber-500/10' },
 ]
 
 export default function SubjectPills() {
@@ -22,14 +24,15 @@ export default function SubjectPills() {
       {subjects.map((subject) => {
         const Icon = subject.icon
         return (
-          <div
+          <Link
             key={subject.name}
-            className="group relative flex cursor-pointer items-center gap-3 rounded-2xl border border-amber-500/20 bg-neutral-900/60 px-5 py-3 shadow-xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-amber-500/50 hover:bg-neutral-800/80 hover:shadow-amber-500/15"
+            href={`/practice?subject=${subject.id}`}
+            className="group relative flex cursor-pointer items-center gap-3 rounded-2xl border border-amber-500/20 bg-neutral-900/60 px-5 py-3.5 shadow-xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-amber-500/60 hover:bg-neutral-800/80 hover:shadow-amber-500/20"
           >
             <div
-              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-linear-to-br ${subject.color} border border-amber-500/30 text-amber-400 transition-transform duration-300 group-hover:scale-110`}
+              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br ${subject.color} border border-amber-500/30 text-amber-400 transition-transform duration-300 group-hover:scale-110`}
             >
-              <Icon className="h-4 w-4" />
+              <Icon className="h-5 w-5" />
             </div>
 
             <div className="flex flex-col text-left">
@@ -45,7 +48,7 @@ export default function SubjectPills() {
             </div>
 
             <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-amber-500 opacity-60 shadow-[0_0_8px_#f59e0b] group-hover:opacity-100"></span>
-          </div>
+          </Link>
         )
       })}
     </div>
