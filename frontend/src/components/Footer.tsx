@@ -79,6 +79,11 @@ export default function Footer() {
                   Axiom Originals
                 </Link>
               </li>
+              <li>
+                <Link href="/leaderboard" className="hover:text-amber-400 transition-colors">
+                  Gold & Silver Leaderboard
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -87,8 +92,8 @@ export default function Footer() {
             <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-3">Trust &amp; Legal</h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <Link href="/about" className="hover:text-amber-400 transition-colors">
-                  About Our Science Engine
+                <Link href="/subscription" className="hover:text-amber-400 transition-colors">
+                  Subscription Plans
                 </Link>
               </li>
               <li>

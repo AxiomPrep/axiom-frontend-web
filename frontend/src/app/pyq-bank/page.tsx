@@ -294,6 +294,13 @@ function PYQBankContent() {
                     {examSet.difficulty}
                   </span>
                   <button
+                    onClick={() => router.push(`/reader?type=pyq&set=${examSet.id}`)}
+                    title="Open in Annotation Reader"
+                    className="flex h-9 w-9 items-center justify-center rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-400 transition hover:bg-amber-500 hover:text-neutral-950"
+                  >
+                    <BookOpen className="h-4 w-4" />
+                  </button>
+                  <button
                     onClick={() => handleStartExamSet(examSet)}
                     className="flex items-center gap-1.5 rounded-xl bg-linear-to-r from-amber-400 to-orange-500 px-5 py-2.5 text-xs font-black text-neutral-950 shadow-md shadow-amber-500/20 hover:scale-105 active:scale-95 transition"
                   >

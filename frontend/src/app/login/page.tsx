@@ -1,61 +1,129 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import {
   Lock,
   Mail,
-  Sparkles,
   ArrowRight,
   Eye,
   EyeOff,
   CheckCircle2,
   ShieldCheck,
-  Zap,
+  User,
+  LogOut,
 } from 'lucide-react'
+import {
+  signInWithEmail,
+  signUpWithEmail,
+  signOut,
+  onAuthChange,
+  type AxiomUser,
+} from '@/lib/auth'
+import { isSupabaseConfigured } from '@/lib/supabase'
 
 export default function LoginPage() {
   const router = useRouter()
-  const [mode, setMode] = useState<'signin' | 'signup' | 'magic'>('signin')
+  const [mode, setMode] = useState<'signin' | 'signup'>('signin')
+  const [user, setUser] = useState<AxiomUser | null>(null)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [fullName, setFullName] = useState('')
-  const [targetExam, setTargetExam] = useState('JEE 2025 / 2026')
   const [loading, setLoading] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
+  useEffect(() => {
+    const unsubscribe = onAuthChange(setUser)
+    return unsubscribe
+  }, [])
+
   const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setErrorMessage(null)
+    setSuccessMessage(null)
     setLoading(true)
 
     try {
-      // Simulate Supabase authentication call
-      await new Promise((resolve) => setTimeout(resolve, 900))
-
-      if (mode === 'magic') {
-        setSuccessMessage(`Supabase magic link dispatched to ${email}! Check your inbox.`)
-        setLoading(false)
-        return
+      if (mode === 'signup') {
+        const { user: created, error } = await signUpWithEmail(email, password, fullName)
+        if (error) {
+          setErrorMessage(error)
+          return
+        }
+        if (created) {
+          setSuccessMessage('Account created via Supabase Auth! Welcome to Axiom.')
+          setTimeout(() => router.push('/practice'), 900)
+        } else {
+          setSuccessMessage('Confirmation email sent — check your inbox to verify.')
+        }
+      } else {
+        const { user: signedIn, error } = await signInWithEmail(email, password)
+        if (error) {
+          setErrorMessage(error)
+          return
+        }
+        if (signedIn) {
+          setSuccessMessage('Authenticated via Supabase Auth! Redirecting…')
+          setTimeout(() => router.push('/practice'), 900)
+        }
       }
-
-      setSuccessMessage(
-        mode === 'signin'
-          ? 'Authenticated via Supabase Auth! Redirecting to Practice...'
-          : 'Account created in Supabase Auth! Welcome to Axiom.'
-      )
-
-      setTimeout(() => {
-        router.push('/practice')
-      }, 1200)
     } catch {
       setErrorMessage('Authentication encountered an unexpected error.')
+    } finally {
       setLoading(false)
     }
+  }
+
+  const handleOAuth = (provider: 'google' | 'github') => {
+    setSuccessMessage(`Initiating ${provider} OAuth via Supabase…`)
+    if (!isSupabaseConfigured) {
+      const demoUser: AxiomUser = {
+        id: `local_${Date.now()}`,
+        email: `aspirant@${provider}.com`,
+        name: provider === 'google' ? 'Google Aspirant' : 'GitHub Aspirant',
+      }
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('axiom_auth_session', JSON.stringify(demoUser))
+      }
+      setUser(demoUser)
+      setTimeout(() => router.push('/practice'), 900)
+    }
+  }
+
+  // Logged-in state
+  if (user) {
+    return (
+      <div className="relative min-h-[calc(100vh-140px)] flex items-center justify-center bg-neutral-950 py-16 px-4 sm:px-6">
+        <div className="pointer-events-none absolute -top-20 left-1/2 h-96 w-[600px] -translate-x-1/2 rounded-full bg-amber-500/15 blur-[160px]" />
+        <div className="relative w-full max-w-md rounded-3xl border border-amber-500/30 bg-neutral-900/80 p-8 text-center backdrop-blur-2xl shadow-2xl shadow-amber-500/10 animate-fade-in-up">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+            <CheckCircle2 className="h-8 w-8" />
+          </div>
+          <h1 className="text-2xl font-black text-white">Welcome, {user.name}!</h1>
+          <p className="mt-1 text-xs text-neutral-400">{user.email}</p>
+          <div className="mt-6 flex flex-col gap-3">
+            <Link
+              href="/practice"
+              className="rounded-xl bg-linear-to-r from-amber-400 to-orange-500 py-3 text-sm font-black text-neutral-950 shadow-lg shadow-amber-500/20 hover:scale-[1.02] transition"
+            >
+              Continue to Practice
+            </Link>
+            <button
+              onClick={async () => {
+                await signOut()
+              }}
+              className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-neutral-950 py-3 text-xs font-bold text-neutral-300 hover:bg-neutral-800 transition"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Sign Out</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -71,23 +139,20 @@ export default function LoginPage() {
           </div>
 
           <h1 className="text-2xl font-black text-white">
-            {mode === 'signin'
-              ? 'Welcome back to Axiom'
-              : mode === 'signup'
-              ? 'Start Your 7-Day Free Trial'
-              : 'Sign in with Magic Link'}
+            {mode === 'signin' ? 'Welcome back to Axiom' : 'Start Your Free Trial'}
           </h1>
           <p className="mt-1 text-xs text-neutral-400">
             Secure Supabase Authentication • 256-bit encrypted
           </p>
 
           {/* Mode Switcher Tabs */}
-          <div className="mt-5 grid grid-cols-3 rounded-xl border border-white/10 bg-neutral-950 p-1 text-xs">
+          <div className="mt-5 grid grid-cols-2 rounded-xl border border-white/10 bg-neutral-950 p-1 text-xs">
             <button
               type="button"
               onClick={() => {
                 setMode('signin')
                 setSuccessMessage(null)
+                setErrorMessage(null)
               }}
               className={`rounded-lg py-1.5 font-bold transition ${
                 mode === 'signin' ? 'bg-amber-500 text-neutral-950 shadow' : 'text-neutral-400 hover:text-white'
@@ -100,24 +165,13 @@ export default function LoginPage() {
               onClick={() => {
                 setMode('signup')
                 setSuccessMessage(null)
+                setErrorMessage(null)
               }}
               className={`rounded-lg py-1.5 font-bold transition ${
                 mode === 'signup' ? 'bg-amber-500 text-neutral-950 shadow' : 'text-neutral-400 hover:text-white'
               }`}
             >
               Sign Up
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMode('magic')
-                setSuccessMessage(null)
-              }}
-              className={`rounded-lg py-1.5 font-bold transition ${
-                mode === 'magic' ? 'bg-amber-500 text-neutral-950 shadow' : 'text-neutral-400 hover:text-white'
-              }`}
-            >
-              Magic Link
             </button>
           </div>
         </div>
@@ -143,14 +197,17 @@ export default function LoginPage() {
               <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-300 mb-1">
                 Full Name
               </label>
-              <input
-                type="text"
-                required
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="Aarav Sharma"
-                className="w-full rounded-xl border border-white/10 bg-neutral-950 px-3.5 py-2.5 text-xs text-white placeholder-neutral-500 focus:border-amber-500 focus:outline-none"
-              />
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+                <input
+                  type="text"
+                  required
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Aarav Sharma"
+                  className="w-full rounded-xl border border-white/10 bg-neutral-950 pl-9 pr-3.5 py-2.5 text-xs text-white placeholder-neutral-500 focus:border-amber-500 focus:outline-none"
+                />
+              </div>
             </div>
           )}
 
@@ -171,61 +228,35 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {mode !== 'magic' && (
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="text-[11px] font-bold uppercase tracking-wider text-neutral-300">
-                  Password
-                </label>
-                {mode === 'signin' && (
-                  <button
-                    type="button"
-                    onClick={() => setMode('magic')}
-                    className="text-[11px] text-amber-400 hover:underline"
-                  >
-                    Forgot password?
-                  </button>
-                )}
-              </div>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••••••"
-                  className="w-full rounded-xl border border-white/10 bg-neutral-950 pl-9 pr-10 py-2.5 text-xs text-white placeholder-neutral-500 focus:border-amber-500 focus:outline-none"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {mode === 'signup' && (
-            <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-300 mb-1">
-                Target Exam
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-neutral-300">
+                Password
               </label>
-              <select
-                value={targetExam}
-                onChange={(e) => setTargetExam(e.target.value)}
-                className="w-full rounded-xl border border-white/10 bg-neutral-950 px-3.5 py-2.5 text-xs text-white focus:border-amber-500 focus:outline-none"
-              >
-                <option value="JEE Main & Advanced 2025">JEE Main &amp; Advanced 2025</option>
-                <option value="JEE Main & Advanced 2026">JEE Main &amp; Advanced 2026</option>
-                <option value="NEET UG 2025">NEET UG 2025</option>
-                <option value="NEET UG 2026">NEET UG 2026</option>
-                <option value="Science Olympiads (INPhO/INChO)">Science Olympiads (INPhO/INChO)</option>
-              </select>
+              {mode === 'signin' && (
+                <span className="text-[11px] text-neutral-500">Forgot password? Use Supabase reset</span>
+              )}
             </div>
-          )}
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+              <input
+                type={showPassword ? 'text' : 'password'}
+                required
+                minLength={6}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••••••"
+                className="w-full rounded-xl border border-white/10 bg-neutral-950 pl-9 pr-10 py-2.5 text-xs text-white placeholder-neutral-500 focus:border-amber-500 focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
+          </div>
 
           <button
             type="submit"
@@ -233,19 +264,17 @@ export default function LoginPage() {
             className="w-full rounded-xl bg-linear-to-r from-amber-400 via-amber-500 to-orange-500 py-3 text-xs font-black text-neutral-950 shadow-lg shadow-amber-500/20 hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition"
           >
             {loading ? (
-              <span>Authenticating with Supabase...</span>
+              <span>Authenticating with Supabase…</span>
             ) : mode === 'signin' ? (
               <span className="flex items-center justify-center gap-1.5">
                 <span>Sign In to Axiom</span>
                 <ArrowRight className="h-4 w-4" />
               </span>
-            ) : mode === 'signup' ? (
+            ) : (
               <span className="flex items-center justify-center gap-1.5">
                 <span>Create Free Account</span>
                 <ArrowRight className="h-4 w-4" />
               </span>
-            ) : (
-              <span>Send Supabase Magic Link</span>
             )}
           </button>
         </form>
@@ -264,10 +293,7 @@ export default function LoginPage() {
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
-            onClick={() => {
-              setSuccessMessage('Initiating Google OAuth via Supabase...')
-              setTimeout(() => router.push('/practice'), 1000)
-            }}
+            onClick={() => handleOAuth('google')}
             className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-neutral-950 py-2.5 text-xs font-semibold text-neutral-300 hover:bg-neutral-800 transition"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24">
@@ -293,10 +319,7 @@ export default function LoginPage() {
 
           <button
             type="button"
-            onClick={() => {
-              setSuccessMessage('Initiating GitHub OAuth via Supabase...')
-              setTimeout(() => router.push('/practice'), 1000)
-            }}
+            onClick={() => handleOAuth('github')}
             className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-neutral-950 py-2.5 text-xs font-semibold text-neutral-300 hover:bg-neutral-800 transition"
           >
             <svg className="h-4 w-4 fill-white" viewBox="0 0 24 24">

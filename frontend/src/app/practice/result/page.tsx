@@ -26,6 +26,7 @@ interface QuestionResult {
   selectedOption: 'A' | 'B' | 'C' | 'D' | null
   isCorrect: boolean
   timeSpent: number
+  solutionViewSeconds?: number
   explanation: string
   difficulty: string
 }
@@ -351,6 +352,9 @@ export default function AttemptResultPage() {
                   <span className="flex items-center gap-1 font-mono text-xs text-neutral-400">
                     <Clock className="h-3 w-3 text-amber-400" />
                     {attempt.timeSpent}s spent
+                    {typeof attempt.solutionViewSeconds === 'number' && (
+                      <span className="ml-1.5 text-amber-400/80">• {attempt.solutionViewSeconds}s solution</span>
+                    )}
                   </span>
                   {attempt.isCorrect ? (
                     <span className="flex items-center gap-1 rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-xs font-bold text-emerald-400 border border-emerald-500/30">

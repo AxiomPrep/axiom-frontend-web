@@ -13,6 +13,7 @@ import {
 import {
   Clock,
   CheckCircle2,
+  XCircle,
   Bookmark,
   ChevronLeft,
   ChevronRight,
@@ -24,7 +25,13 @@ import {
   Play,
   HelpCircle,
   X,
+  Lightbulb,
 } from 'lucide-react'
+import {
+  createPracticeAttempt,
+  answerAttempt,
+  submitAttempt,
+} from '@/lib/api'
 
 type QuestionStatus = 'answered' | 'marked' | 'marked-answered' | 'unanswered' | 'not-visited'
 
@@ -33,6 +40,8 @@ interface UserAttempt {
   isMarked: boolean
   timeSpentSeconds: number
   visited: boolean
+  revealed: boolean
+  solutionViewSeconds: number
 }
 
 function PlayerContent() {
@@ -51,17 +60,37 @@ function PlayerContent() {
 
   const [currentIndex, setCurrentIndex] = useState(0)
   const [attempts, setAttempts] = useState<Record<number, UserAttempt>>({
-    0: { selectedOption: null, isMarked: false, timeSpentSeconds: 0, visited: true },
-    1: { selectedOption: null, isMarked: false, timeSpentSeconds: 0, visited: false },
-    2: { selectedOption: null, isMarked: false, timeSpentSeconds: 0, visited: false },
-    3: { selectedOption: null, isMarked: false, timeSpentSeconds: 0, visited: false },
-    4: { selectedOption: null, isMarked: false, timeSpentSeconds: 0, visited: false },
+    0: { selectedOption: null, isMarked: false, timeSpentSeconds: 0, visited: true, revealed: false, solutionViewSeconds: 0 },
+    1: { selectedOption: null, isMarked: false, timeSpentSeconds: 0, visited: false, revealed: false, solutionViewSeconds: 0 },
+    2: { selectedOption: null, isMarked: false, timeSpentSeconds: 0, visited: false, revealed: false, solutionViewSeconds: 0 },
+    3: { selectedOption: null, isMarked: false, timeSpentSeconds: 0, visited: false, revealed: false, solutionViewSeconds: 0 },
+    4: { selectedOption: null, isMarked: false, timeSpentSeconds: 0, visited: false, revealed: false, solutionViewSeconds: 0 },
   })
 
   // Global Timer (15 minutes = 900 seconds)
   const [totalSecondsLeft, setTotalSecondsLeft] = useState(900)
   const [isPaused, setIsPaused] = useState(false)
   const [showSubmitModal, setShowSubmitModal] = useState(false)
+  const [attemptId, setAttemptId] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+
+  // Create a persisted attempt record (mirrors POST /api/practice/attempt)
+  useEffect(() => {
+    let active = true
+    createPracticeAttempt({
+      subjectId: subjectId,
+      classLevel: chapter.classNum,
+      chapterId: chapterId,
+      tierId: tierNum,
+      totalSeconds: 900,
+    }).then((attempt) => {
+      if (active) setAttemptId(attempt.id)
+    })
+    return () => {
+      active = false
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Timer Tick
   useEffect(() => {
@@ -76,12 +105,15 @@ function PlayerContent() {
         return prev - 1
       })
 
-      // Track time on current question
+      // Track time on current question (+ solution-view time if revealed)
       setAttempts((prev) => ({
         ...prev,
         [currentIndex]: {
           ...prev[currentIndex],
           timeSpentSeconds: (prev[currentIndex]?.timeSpentSeconds || 0) + 1,
+          solutionViewSeconds: prev[currentIndex]?.revealed
+            ? (prev[currentIndex]?.solutionViewSeconds || 0) + 1
+            : prev[currentIndex]?.solutionViewSeconds || 0,
         },
       }))
     }, 1000)
@@ -101,6 +133,8 @@ function PlayerContent() {
     isMarked: false,
     timeSpentSeconds: 0,
     visited: true,
+    revealed: false,
+    solutionViewSeconds: 0,
   }
 
   const handleSelectOption = (optId: 'A' | 'B' | 'C' | 'D') => {
@@ -110,8 +144,31 @@ function PlayerContent() {
         ...prev[currentIndex],
         selectedOption: prev[currentIndex]?.selectedOption === optId ? null : optId,
         visited: true,
+        revealed: false,
       },
     }))
+  }
+
+  // Locks the answer, reveals the solution, and starts solution-view timing.
+  const handleSubmitAnswer = () => {
+    if (currentAttempt.selectedOption === null) return
+    setAttempts((prev) => ({
+      ...prev,
+      [currentIndex]: {
+        ...prev[currentIndex],
+        revealed: true,
+        visited: true,
+      },
+    }))
+    // Persist the answer (mirrors POST /api/attempts/:id/answer)
+    if (attemptId) {
+      answerAttempt(attemptId, {
+        questionId: currentQ.id,
+        selectedOption: currentAttempt.selectedOption,
+        timeSpentSeconds: currentAttempt.timeSpentSeconds,
+        solutionViewSeconds: currentAttempt.solutionViewSeconds,
+      })
+    }
   }
 
   const handleClearResponse = () => {
@@ -140,7 +197,7 @@ function PlayerContent() {
       setAttempts((prev) => ({
         ...prev,
         [nextIdx]: {
-          ...(prev[nextIdx] || { selectedOption: null, isMarked: false, timeSpentSeconds: 0 }),
+          ...(prev[nextIdx] || { selectedOption: null, isMarked: false, timeSpentSeconds: 0, revealed: false, solutionViewSeconds: 0 }),
           visited: true,
         },
       }))
@@ -165,7 +222,7 @@ function PlayerContent() {
     setAttempts((prev) => ({
       ...prev,
       [index]: {
-        ...(prev[index] || { selectedOption: null, isMarked: false, timeSpentSeconds: 0 }),
+        ...(prev[index] || { selectedOption: null, isMarked: false, timeSpentSeconds: 0, revealed: false, solutionViewSeconds: 0 }),
         visited: true,
       },
     }))
@@ -186,7 +243,10 @@ function PlayerContent() {
   const markedCount = Object.values(attempts).filter((a) => a.isMarked).length
   const unattemptedCount = questions.length - answeredCount
 
-  const handleSubmitTest = () => {
+  const handleSubmitTest = async () => {
+    if (submitting) return
+    setSubmitting(true)
+    const timeTaken = 900 - totalSecondsLeft
     // Save attempt in localStorage for Results page
     if (typeof window !== 'undefined') {
       const resultPayload = {
@@ -194,7 +254,7 @@ function PlayerContent() {
         chapterName: chapter.name,
         tierName: tier.name,
         totalQuestions: questions.length,
-        timeTakenSeconds: 900 - totalSecondsLeft,
+        timeTakenSeconds: timeTaken,
         attempts: Object.entries(attempts).map(([idxStr, att]) => {
           const idx = parseInt(idxStr, 10)
           const q = questions[idx]
@@ -207,6 +267,7 @@ function PlayerContent() {
             selectedOption: att.selectedOption,
             isCorrect: att.selectedOption === q.correctOption,
             timeSpent: att.timeSpentSeconds,
+            solutionViewSeconds: att.solutionViewSeconds,
             explanation: q.explanation,
             difficulty: q.difficulty,
           }
@@ -214,7 +275,11 @@ function PlayerContent() {
       }
       localStorage.setItem('axiom_last_attempt', JSON.stringify(resultPayload))
     }
-    router.push('/practice/result')
+    // Finalise the persisted attempt record (mirrors POST /api/attempts/:id/submit)
+    if (attemptId) {
+      await submitAttempt(attemptId, timeTaken)
+    }
+    router.push(`/practice/result?attempt=${attemptId || ''}`)
   }
 
   return (
@@ -314,33 +379,69 @@ function PlayerContent() {
             <div className="space-y-3 mb-8">
               {currentQ.options.map((option) => {
                 const isSelected = currentAttempt.selectedOption === option.id
+                const isCorrect = option.id === currentQ.correctOption
+                const revealed = currentAttempt.revealed
+
+                let optionClass = 'border-white/10 bg-neutral-950/60 hover:border-amber-500/30 hover:bg-neutral-800/60'
+                let badgeClass = 'bg-neutral-800 text-neutral-300 group-hover:bg-neutral-700'
+                if (revealed) {
+                  if (isCorrect) {
+                    optionClass = 'border-emerald-500 bg-emerald-950/30'
+                    badgeClass = 'bg-emerald-500 text-neutral-950'
+                  } else if (isSelected && !isCorrect) {
+                    optionClass = 'border-rose-500 bg-rose-950/30'
+                    badgeClass = 'bg-rose-500 text-neutral-950'
+                  } else {
+                    optionClass = 'border-white/5 bg-neutral-950/50 opacity-60'
+                  }
+                } else if (isSelected) {
+                  optionClass = 'border-amber-500 bg-amber-500/15 shadow-lg shadow-amber-500/10'
+                  badgeClass = 'bg-amber-500 text-neutral-950'
+                }
 
                 return (
                   <div
                     key={option.id}
-                    onClick={() => handleSelectOption(option.id)}
-                    className={`group flex cursor-pointer items-center gap-4 rounded-2xl border p-4 transition-all duration-200 ${
-                      isSelected
-                        ? 'border-amber-500 bg-amber-500/15 shadow-lg shadow-amber-500/10'
-                        : 'border-white/10 bg-neutral-950/60 hover:border-amber-500/30 hover:bg-neutral-800/60'
-                    }`}
+                    onClick={() => !revealed && handleSelectOption(option.id)}
+                    className={`group flex items-center gap-4 rounded-2xl border p-4 transition-all duration-200 ${
+                      revealed ? 'cursor-default' : 'cursor-pointer'
+                    } ${optionClass}`}
                   >
                     <div
-                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl font-mono text-xs font-bold transition-colors ${
-                        isSelected
-                          ? 'bg-amber-500 text-neutral-950'
-                          : 'bg-neutral-800 text-neutral-300 group-hover:bg-neutral-700'
-                      }`}
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl font-mono text-xs font-bold transition-colors ${badgeClass}`}
                     >
                       {option.id}
                     </div>
                     <div className="flex-1 text-sm font-medium text-neutral-200 group-hover:text-white">
                       {option.text}
                     </div>
+                    {revealed && isCorrect && <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />}
+                    {revealed && isSelected && !isCorrect && <XCircle className="h-4 w-4 text-rose-400 shrink-0" />}
                   </div>
                 )
               })}
             </div>
+
+            {/* Solution panel (revealed after submitting the answer) */}
+            {currentAttempt.revealed && (
+              <div className="mb-8 rounded-2xl border border-amber-500/30 bg-amber-500/5 p-5 animate-fade-in-up">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-400">
+                    <Lightbulb className="h-4 w-4" />
+                    <span>
+                      {currentAttempt.selectedOption === currentQ.correctOption ? 'Correct Answer' : 'Solution'}
+                    </span>
+                  </div>
+                  <span className="flex items-center gap-1 font-mono text-[11px] text-neutral-400">
+                    <Clock className="h-3 w-3 text-amber-400" />
+                    {currentAttempt.solutionViewSeconds}s viewing
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-neutral-300 leading-relaxed">
+                  {currentQ.explanation}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Action Buttons Bar */}
@@ -348,7 +449,7 @@ function PlayerContent() {
             <div className="flex items-center gap-2">
               <button
                 onClick={handleClearResponse}
-                disabled={!currentAttempt.selectedOption}
+                disabled={!currentAttempt.selectedOption || currentAttempt.revealed}
                 className="rounded-xl border border-white/10 bg-neutral-900 px-3.5 py-2 text-xs font-semibold text-neutral-400 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
               >
                 Clear Response
@@ -364,6 +465,15 @@ function PlayerContent() {
               >
                 <Bookmark className="h-3.5 w-3.5" />
                 <span>{currentAttempt.isMarked ? 'Marked for Review' : 'Mark for Review'}</span>
+              </button>
+
+              <button
+                onClick={handleSubmitAnswer}
+                disabled={!currentAttempt.selectedOption || currentAttempt.revealed}
+                className="flex items-center gap-1.5 rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-3.5 py-2 text-xs font-bold text-emerald-300 hover:bg-emerald-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              >
+                <Lightbulb className="h-3.5 w-3.5" />
+                <span>{currentAttempt.revealed ? 'Solution Shown' : 'Submit Answer'}</span>
               </button>
             </div>
 
@@ -388,7 +498,15 @@ function PlayerContent() {
                 onClick={handleSaveAndNext}
                 className="flex items-center gap-1.5 rounded-xl bg-linear-to-r from-amber-400 to-orange-500 px-5 py-2 text-xs font-black text-neutral-950 shadow-md shadow-amber-500/20 hover:scale-105 active:scale-95 transition"
               >
-                <span>{currentIndex === questions.length - 1 ? 'Save & Review' : 'Save & Next'}</span>
+                <span>
+                  {currentAttempt.revealed
+                    ? currentIndex === questions.length - 1
+                      ? 'Review'
+                      : 'Next'
+                    : currentIndex === questions.length - 1
+                    ? 'Save & Review'
+                    : 'Save & Next'}
+                </span>
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
@@ -525,9 +643,10 @@ function PlayerContent() {
               </button>
               <button
                 onClick={handleSubmitTest}
-                className="rounded-xl bg-linear-to-r from-amber-400 to-orange-500 px-5 py-2.5 text-xs font-black text-neutral-950 shadow-lg shadow-amber-500/25 hover:scale-105 active:scale-95 transition"
+                disabled={submitting}
+                className="rounded-xl bg-linear-to-r from-amber-400 to-orange-500 px-5 py-2.5 text-xs font-black text-neutral-950 shadow-lg shadow-amber-500/25 hover:scale-105 active:scale-95 disabled:opacity-60 transition"
               >
-                Confirm &amp; View Results
+                {submitting ? 'Submitting…' : 'Confirm & View Results'}
               </button>
             </div>
           </div>

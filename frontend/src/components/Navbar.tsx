@@ -9,7 +9,8 @@ import {
   BookOpen,
   GraduationCap,
   Flame,
-  Info,
+  Trophy,
+  Timer,
   Menu,
   X,
   ArrowRight,
@@ -18,7 +19,6 @@ import {
   Home,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import UpgradeModal from './UpgradeModal'
 
 interface NavLink {
   label: string
@@ -29,16 +29,16 @@ interface NavLink {
 
 const navLinks: NavLink[] = [
   { label: 'Home', href: '/', icon: Home },
+  { label: 'Leaderboard', href: '/leaderboard', icon: Trophy },
   { label: 'Practice', href: '/practice', icon: Target },
-  { label: 'PYQ Bank', href: '/pyq-bank', icon: BookOpen },
-  { label: 'Top Teachers', href: '/top-teachers', icon: GraduationCap },
+  { label: "PYQ's", href: '/pyq-bank', icon: BookOpen },
+  { label: 'Teachers', href: '/top-teachers', icon: GraduationCap },
   { label: 'Originals', href: '/originals', icon: Flame, badge: 'HOT' },
-  { label: 'About', href: '/about', icon: Info },
+  { label: 'Timer', href: '/timer', icon: Timer },
 ]
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [upgradeOpen, setUpgradeOpen] = useState(false)
   const pathname = usePathname()
 
   const isActive = (href: string) => {
@@ -113,13 +113,13 @@ export default function Navbar() {
           {/* CTAs */}
           <div className="flex items-center gap-2.5 sm:gap-3">
             {/* Upgrade Button */}
-            <button
-              onClick={() => setUpgradeOpen(true)}
+            <Link
+              href="/subscription"
               className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3.5 py-1.5 text-xs font-bold text-amber-300 transition hover:bg-amber-500/20 hover:border-amber-500/60"
             >
               <Zap className="h-3.5 w-3.5 text-amber-400" />
               <span>Upgrade</span>
-            </button>
+            </Link>
 
             {/* Sign In Link (hidden on the smallest screens, still reachable via mobile drawer) */}
             <Link
@@ -190,16 +190,14 @@ export default function Navbar() {
               })}
 
               <li className="pt-2 border-t border-white/10 flex items-center justify-between gap-3">
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false)
-                    setUpgradeOpen(true)
-                  }}
+                <Link
+                  href="/subscription"
+                  onClick={() => setMobileMenuOpen(false)}
                   className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 py-2.5 text-xs font-bold text-amber-300"
                 >
                   <Zap className="h-3.5 w-3.5 text-amber-400" />
                   <span>Upgrade Plan</span>
-                </button>
+                </Link>
                 <Link
                   href="/login"
                   onClick={() => setMobileMenuOpen(false)}
@@ -213,8 +211,6 @@ export default function Navbar() {
           </div>
         )}
       </header>
-
-      <UpgradeModal isOpen={upgradeOpen} onClose={() => setUpgradeOpen(false)} />
     </>
   )
 }
