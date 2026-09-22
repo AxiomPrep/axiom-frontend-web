@@ -95,12 +95,12 @@ export default function ParticleBackground() {
       })
     }
 
-    // Science orbit nodes (planetary/atomic style)
+    // Science orbit nodes with mathematical & scientific signs
     const orbitNodes: ScienceNode[] = [
-      { x: width * 0.2, y: height * 0.25, angle: 0, radius: 4, speed: 0.008, ringRadius: 65, label: 'e⁻' },
-      { x: width * 0.82, y: height * 0.35, angle: Math.PI / 2, radius: 5, speed: 0.006, ringRadius: 85, label: 'hν' },
-      { x: width * 0.15, y: height * 0.75, angle: Math.PI, radius: 4, speed: 0.007, ringRadius: 55, label: 'Ψ' },
-      { x: width * 0.85, y: height * 0.72, angle: Math.PI * 1.5, radius: 4.5, speed: 0.009, ringRadius: 70, label: 'λ' },
+      { x: width * 0.2, y: height * 0.25, angle: 0, radius: 4, speed: 0.008, ringRadius: 65, label: '∑' },
+      { x: width * 0.82, y: height * 0.35, angle: Math.PI / 2, radius: 5, speed: 0.006, ringRadius: 85, label: '∫' },
+      { x: width * 0.15, y: height * 0.75, angle: Math.PI, radius: 4, speed: 0.007, ringRadius: 55, label: 'π' },
+      { x: width * 0.85, y: height * 0.72, angle: Math.PI * 1.5, radius: 4.5, speed: 0.009, ringRadius: 70, label: '√' },
     ]
 
     let time = 0

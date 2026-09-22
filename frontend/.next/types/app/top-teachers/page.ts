@@ -1,4 +1,4 @@
-// File: C:\Users\mudab\Desktop\Axiom\frontend\src\app\top-teachers\page.tsx
+// File: C:\Users\mudab\Desktop\axiom-frontend-web\frontend\src\app\top-teachers\page.tsx
 import * as entry from '../../../../src/app/top-teachers/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

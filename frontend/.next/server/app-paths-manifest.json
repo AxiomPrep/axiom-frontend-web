@@ -1,11 +1,16 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
+  "/about/page": "app/about/page.js",
+  "/practice/result/page": "app/practice/result/page.js",
+  "/practice/page": "app/practice/page.js",
+  "/login/page": "app/login/page.js",
+  "/originals/page": "app/originals/page.js",
   "/page": "app/page.js",
   "/leaderboard/page": "app/leaderboard/page.js",
-  "/practice/page": "app/practice/page.js",
   "/pyq-bank/page": "app/pyq-bank/page.js",
-  "/top-teachers/page": "app/top-teachers/page.js",
-  "/originals/page": "app/originals/page.js",
+  "/practice/player/page": "app/practice/player/page.js",
+  "/reader/page": "app/reader/page.js",
   "/subscription/page": "app/subscription/page.js",
   "/timer/page": "app/timer/page.js",
-  "/login/page": "app/login/page.js"
+  "/top-teachers/page": "app/top-teachers/page.js"
 }

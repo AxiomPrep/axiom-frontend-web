@@ -9,21 +9,20 @@ import {
   Sparkles,
   ArrowRight,
   Target,
-  Zap,
+  Clock,
   Star,
   BookOpen,
   Atom,
   FlaskConical,
   Calculator,
-  Dna,
   Compass,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 const subjectTags = ['Physics', 'Chemistry', 'Mathematics', 'Biology']
 
-interface FloatingFormula {
-  text: string
+interface FloatingSign {
+  sign: string
   label: string
   icon: LucideIcon
   top: string
@@ -31,26 +30,24 @@ interface FloatingFormula {
   right?: string
 }
 
-const floatingFormulas: { left: FloatingFormula[]; right: FloatingFormula[] } = {
+const floatingSigns: { left: FloatingSign[]; right: FloatingSign[] } = {
   left: [
-    { text: 'F = m · a', label: 'PHYSICS', icon: Atom, top: '12%', left: '3%' },
-    { text: '∫ f(x) dx', label: 'MATHEMATICS', icon: Calculator, top: '32%', left: '4%' },
-    { text: 'pH = -log[H⁺]', label: 'CHEMISTRY', icon: FlaskConical, top: '54%', left: '2%' },
-    { text: 'ATP ↔ ADP', label: 'BIOLOGY', icon: Dna, top: '74%', left: '4%' },
+    { sign: '∑', label: 'SUMMATION', icon: Calculator, top: '12%', left: '3%' },
+    { sign: '∫', label: 'INTEGRAL', icon: Calculator, top: '32%', left: '4%' },
+    { sign: '√', label: 'RADICAL', icon: Atom, top: '54%', left: '2%' },
+    { sign: 'Δ', label: 'CHANGE / DELTA', icon: FlaskConical, top: '74%', left: '4%' },
   ],
   right: [
-    { text: 'E = m · c²', label: 'RELATIVITY', icon: Atom, top: '14%', right: '3%' },
-    { text: 'sin²θ + cos²θ = 1', label: 'TRIGONOMETRY', icon: Calculator, top: '34%', right: '4%' },
-    { text: 'PV = nRT', label: 'THERMODYNAMICS', icon: FlaskConical, top: '54%', right: '3%' },
-    { text: 'ΔG = ΔH - TΔS', label: 'ENTROPY', icon: Atom, top: '74%', right: '4%' },
+    { sign: 'π', label: 'CONSTANT', icon: Calculator, top: '14%', right: '3%' },
+    { sign: '∞', label: 'INFINITY', icon: Atom, top: '34%', right: '4%' },
+    { sign: '±', label: 'PLUS-MINUS', icon: Calculator, top: '54%', right: '3%' },
+    { sign: 'θ', label: 'ANGLE', icon: Atom, top: '74%', right: '4%' },
   ],
 }
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-neutral-950 text-neutral-100 bg-grid-pattern pb-28">
-      {/* Dynamic Animated Particle & Constellation Background */}
-      <ParticleBackground />
+    <section className="relative overflow-hidden text-neutral-100 pb-28">
 
       {/* Ambient background glows */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -60,8 +57,8 @@ export default function Hero() {
         <div className="absolute bottom-10 left-1/3 h-80 w-80 rounded-full bg-yellow-500/10 blur-[130px]"></div>
       </div>
 
-      {/* Floating formulas — left */}
-      {floatingFormulas.left.map((item, idx) => {
+      {/* Floating mathematical signs — left */}
+      {floatingSigns.left.map((item, idx) => {
         const Icon = item.icon
         return (
           <div
@@ -69,21 +66,21 @@ export default function Hero() {
             className="pointer-events-none absolute hidden text-xs xl:block animate-float"
             style={{ top: item.top, left: item.left, animationDelay: `${idx * 0.9}s` }}
           >
-            <div className="flex items-center gap-2.5 rounded-2xl border border-amber-500/20 bg-neutral-900/60 px-3.5 py-2.5 backdrop-blur-md opacity-60 shadow-lg shadow-amber-500/5 hover:opacity-100 transition-all duration-300">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/15 text-amber-400">
-                <Icon className="h-4 w-4" />
+            <div className="flex items-center gap-2.5 rounded-2xl border border-amber-500/20 bg-neutral-900/60 px-3.5 py-2.5 backdrop-blur-md opacity-70 shadow-lg shadow-amber-500/5 hover:opacity-100 transition-all duration-300">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/15 text-amber-400 font-mono text-lg font-black">
+                {item.sign}
               </div>
               <div>
                 <div className="text-[9px] font-bold uppercase tracking-wider text-amber-500/80">{item.label}</div>
-                <div className="font-mono text-xs font-semibold text-neutral-200">{item.text}</div>
+                <div className="font-mono text-xs font-semibold text-neutral-200">Symbol {item.sign}</div>
               </div>
             </div>
           </div>
         )
       })}
 
-      {/* Floating formulas — right */}
-      {floatingFormulas.right.map((item, idx) => {
+      {/* Floating mathematical signs — right */}
+      {floatingSigns.right.map((item, idx) => {
         const Icon = item.icon
         return (
           <div
@@ -91,13 +88,13 @@ export default function Hero() {
             className="pointer-events-none absolute hidden text-xs xl:block animate-float-delayed"
             style={{ top: item.top, right: item.right, animationDelay: `${idx * 0.9}s` }}
           >
-            <div className="flex items-center gap-2.5 rounded-2xl border border-amber-500/20 bg-neutral-900/60 px-3.5 py-2.5 backdrop-blur-md opacity-60 shadow-lg shadow-amber-500/5 hover:opacity-100 transition-all duration-300">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/15 text-amber-400">
-                <Icon className="h-4 w-4" />
+            <div className="flex items-center gap-2.5 rounded-2xl border border-amber-500/20 bg-neutral-900/60 px-3.5 py-2.5 backdrop-blur-md opacity-70 shadow-lg shadow-amber-500/5 hover:opacity-100 transition-all duration-300">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/15 text-amber-400 font-mono text-lg font-black">
+                {item.sign}
               </div>
               <div>
                 <div className="text-[9px] font-bold uppercase tracking-wider text-amber-500/80">{item.label}</div>
-                <div className="font-mono text-xs font-semibold text-neutral-200">{item.text}</div>
+                <div className="font-mono text-xs font-semibold text-neutral-200">Symbol {item.sign}</div>
               </div>
             </div>
           </div>
@@ -169,7 +166,7 @@ export default function Hero() {
           className="animate-fade-in-up mx-auto mb-10 max-w-2xl text-center text-sm leading-relaxed text-neutral-400 sm:text-base"
           style={{ animationDelay: '0.4s' }}
         >
-          Solve 50,000+ curated PYQs, get instant step-by-step AI doubt clearance, and master high-yield concepts across 5 calibrated difficulty tiers.
+          Solve 50,000+ curated PYQs with step-by-step master explanations, real-time analytics, and high-yield concepts across 5 calibrated difficulty tiers.
         </p>
 
         {/* CTAs */}
@@ -204,7 +201,7 @@ export default function Hero() {
           {[
             { icon: BookOpen, value: '50,000+', label: 'Verified PYQs' },
             { icon: Target, value: '99.8%', label: 'Top Percentiles' },
-            { icon: Zap, value: '24/7', label: 'Instant AI Doubts' },
+            { icon: Clock, value: '24/7', label: 'Practice Access' },
             { icon: Star, value: '4.9 / 5', label: 'Aspirant Rating', filled: true },
           ].map(({ icon: Icon, value, label, filled }) => (
             <div
@@ -221,7 +218,7 @@ export default function Hero() {
         </div>
 
         {/* Subject pills with direct router links */}
-        <div className="animate-fade-in-up mb-20" style={{ animationDelay: '0.8s' }}>
+        <div className="animate-fade-in-up mb-16" style={{ animationDelay: '0.8s' }}>
           <div className="text-center mb-6">
             <span className="text-xs font-bold uppercase tracking-widest text-amber-500">Pick a Discipline</span>
             <h3 className="text-2xl font-black text-white mt-1">High-Yield Subject Catalogs</h3>
@@ -229,7 +226,7 @@ export default function Hero() {
           <SubjectPills />
         </div>
 
-        {/* Testimonials */}
+        {/* HOD Validation Section (Replacing old Testimonials) */}
         <div className="animate-fade-in-up" style={{ animationDelay: '0.9s' }}>
           <ValidationSection />
         </div>

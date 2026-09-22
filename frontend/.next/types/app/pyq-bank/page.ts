@@ -1,4 +1,4 @@
-// File: C:\Users\mudab\Desktop\Axiom\frontend\src\app\pyq-bank\page.tsx
+// File: C:\Users\mudab\Desktop\axiom-frontend-web\frontend\src\app\pyq-bank\page.tsx
 import * as entry from '../../../../src/app/pyq-bank/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

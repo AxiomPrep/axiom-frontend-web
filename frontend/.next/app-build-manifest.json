@@ -1,55 +1,131 @@
 {
   "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-4772d34723bd25e0.js",
+      "static/chunks/4bd1b696-c023c6e3521b1417.js",
+      "static/chunks/255-c5a697ddbf82d774.js",
+      "static/chunks/main-app-8c0f092c7bed62f6.js",
+      "static/chunks/app/_not-found/page-7f43df1f82373647.js"
+    ],
     "/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/layout.css",
-      "static/chunks/app/layout.js"
+      "static/chunks/webpack-4772d34723bd25e0.js",
+      "static/chunks/4bd1b696-c023c6e3521b1417.js",
+      "static/chunks/255-c5a697ddbf82d774.js",
+      "static/chunks/main-app-8c0f092c7bed62f6.js",
+      "static/css/c5577ace7f843db7.css",
+      "static/chunks/619-ba102abea3e3d0e4.js",
+      "static/chunks/290-767753e03e8f2983.js",
+      "static/chunks/app/layout-9cb39a8319d6dca9.js"
     ],
-    "/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+    "/about/page": [
+      "static/chunks/webpack-4772d34723bd25e0.js",
+      "static/chunks/4bd1b696-c023c6e3521b1417.js",
+      "static/chunks/255-c5a697ddbf82d774.js",
+      "static/chunks/main-app-8c0f092c7bed62f6.js",
+      "static/chunks/619-ba102abea3e3d0e4.js",
+      "static/chunks/app/about/page-5cc9403fd9621c0b.js"
     ],
-    "/leaderboard/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/leaderboard/page.js"
+    "/practice/result/page": [
+      "static/chunks/webpack-4772d34723bd25e0.js",
+      "static/chunks/4bd1b696-c023c6e3521b1417.js",
+      "static/chunks/255-c5a697ddbf82d774.js",
+      "static/chunks/main-app-8c0f092c7bed62f6.js",
+      "static/chunks/619-ba102abea3e3d0e4.js",
+      "static/chunks/app/practice/result/page-f55a035f05a587d8.js"
     ],
     "/practice/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/practice/page.js"
-    ],
-    "/pyq-bank/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/pyq-bank/page.js"
-    ],
-    "/top-teachers/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/top-teachers/page.js"
-    ],
-    "/originals/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/originals/page.js"
-    ],
-    "/timer/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/timer/page.js"
-    ],
-    "/subscription/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/subscription/page.js"
+      "static/chunks/webpack-4772d34723bd25e0.js",
+      "static/chunks/4bd1b696-c023c6e3521b1417.js",
+      "static/chunks/255-c5a697ddbf82d774.js",
+      "static/chunks/main-app-8c0f092c7bed62f6.js",
+      "static/chunks/674-ebdc9d15ad079637.js",
+      "static/chunks/app/practice/page-3eb45fa1ac7dcb5d.js"
     ],
     "/login/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/login/page.js"
+      "static/chunks/webpack-4772d34723bd25e0.js",
+      "static/chunks/4bd1b696-c023c6e3521b1417.js",
+      "static/chunks/255-c5a697ddbf82d774.js",
+      "static/chunks/main-app-8c0f092c7bed62f6.js",
+      "static/chunks/44530001-61eba8602745b10c.js",
+      "static/chunks/619-ba102abea3e3d0e4.js",
+      "static/chunks/160-7ca02efa806baabb.js",
+      "static/chunks/app/login/page-82d51861dad2c9aa.js"
+    ],
+    "/originals/page": [
+      "static/chunks/webpack-4772d34723bd25e0.js",
+      "static/chunks/4bd1b696-c023c6e3521b1417.js",
+      "static/chunks/255-c5a697ddbf82d774.js",
+      "static/chunks/main-app-8c0f092c7bed62f6.js",
+      "static/chunks/619-ba102abea3e3d0e4.js",
+      "static/chunks/app/originals/page-5cc9403fd9621c0b.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-4772d34723bd25e0.js",
+      "static/chunks/4bd1b696-c023c6e3521b1417.js",
+      "static/chunks/255-c5a697ddbf82d774.js",
+      "static/chunks/main-app-8c0f092c7bed62f6.js",
+      "static/chunks/619-ba102abea3e3d0e4.js",
+      "static/chunks/367-8e10e4a70f257b7c.js",
+      "static/chunks/app/page-e7e3a59d500d150d.js"
+    ],
+    "/leaderboard/page": [
+      "static/chunks/webpack-4772d34723bd25e0.js",
+      "static/chunks/4bd1b696-c023c6e3521b1417.js",
+      "static/chunks/255-c5a697ddbf82d774.js",
+      "static/chunks/main-app-8c0f092c7bed62f6.js",
+      "static/chunks/674-ebdc9d15ad079637.js",
+      "static/chunks/app/leaderboard/page-636ab1c3ff6ad57e.js"
+    ],
+    "/pyq-bank/page": [
+      "static/chunks/webpack-4772d34723bd25e0.js",
+      "static/chunks/4bd1b696-c023c6e3521b1417.js",
+      "static/chunks/255-c5a697ddbf82d774.js",
+      "static/chunks/main-app-8c0f092c7bed62f6.js",
+      "static/chunks/619-ba102abea3e3d0e4.js",
+      "static/chunks/674-ebdc9d15ad079637.js",
+      "static/chunks/app/pyq-bank/page-a5cba4d9bad5b116.js"
+    ],
+    "/practice/player/page": [
+      "static/chunks/webpack-4772d34723bd25e0.js",
+      "static/chunks/4bd1b696-c023c6e3521b1417.js",
+      "static/chunks/255-c5a697ddbf82d774.js",
+      "static/chunks/main-app-8c0f092c7bed62f6.js",
+      "static/chunks/619-ba102abea3e3d0e4.js",
+      "static/chunks/674-ebdc9d15ad079637.js",
+      "static/chunks/app/practice/player/page-ea8a75a5550f1466.js"
+    ],
+    "/reader/page": [
+      "static/chunks/webpack-4772d34723bd25e0.js",
+      "static/chunks/4bd1b696-c023c6e3521b1417.js",
+      "static/chunks/255-c5a697ddbf82d774.js",
+      "static/chunks/main-app-8c0f092c7bed62f6.js",
+      "static/chunks/619-ba102abea3e3d0e4.js",
+      "static/chunks/674-ebdc9d15ad079637.js",
+      "static/chunks/app/reader/page-fa6996d589c4e4ed.js"
+    ],
+    "/subscription/page": [
+      "static/chunks/webpack-4772d34723bd25e0.js",
+      "static/chunks/4bd1b696-c023c6e3521b1417.js",
+      "static/chunks/255-c5a697ddbf82d774.js",
+      "static/chunks/main-app-8c0f092c7bed62f6.js",
+      "static/chunks/674-ebdc9d15ad079637.js",
+      "static/chunks/app/subscription/page-4c19ce0fbc6dcd5c.js"
+    ],
+    "/timer/page": [
+      "static/chunks/webpack-4772d34723bd25e0.js",
+      "static/chunks/4bd1b696-c023c6e3521b1417.js",
+      "static/chunks/255-c5a697ddbf82d774.js",
+      "static/chunks/main-app-8c0f092c7bed62f6.js",
+      "static/chunks/619-ba102abea3e3d0e4.js",
+      "static/chunks/app/timer/page-5cc9403fd9621c0b.js"
+    ],
+    "/top-teachers/page": [
+      "static/chunks/webpack-4772d34723bd25e0.js",
+      "static/chunks/4bd1b696-c023c6e3521b1417.js",
+      "static/chunks/255-c5a697ddbf82d774.js",
+      "static/chunks/main-app-8c0f092c7bed62f6.js",
+      "static/chunks/619-ba102abea3e3d0e4.js",
+      "static/chunks/app/top-teachers/page-5cc9403fd9621c0b.js"
     ]
   }
 }

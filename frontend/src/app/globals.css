@@ -1,14 +1,29 @@
 @import "tailwindcss";
 
 :root {
-  --background: #06070a;
-  --surface: #0f1117;
+  --background: #000000;
+  --surface: #08080a;
   --surface-border: rgba(245, 158, 11, 0.12);
   --text: #f8fafc;
   --muted: #94a3b8;
   --accent: #f59e0b;
   --accent-strong: #d97706;
   --border: rgba(245, 158, 11, 0.18);
+  --card-bg: rgba(23, 23, 23, 0.6);
+  --card-border: rgba(245, 158, 11, 0.15);
+}
+
+[data-theme="light"], .light {
+  --background: #F7F4EF;
+  --surface: #EFEBE3;
+  --surface-border: rgba(217, 119, 6, 0.2);
+  --text: #1c1917;
+  --muted: #57534e;
+  --accent: #d97706;
+  --accent-strong: #b45309;
+  --border: rgba(217, 119, 6, 0.2);
+  --card-bg: rgba(250, 247, 242, 0.85);
+  --card-border: rgba(217, 119, 6, 0.2);
 }
 
 body {
@@ -16,6 +31,104 @@ body {
   color: var(--text);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light mode overrides for soft oat palette */
+[data-theme="light"] .bg-neutral-950,
+.light .bg-neutral-950,
+[data-theme="light"] .bg-black,
+.light .bg-black {
+  background-color: #F7F4EF !important;
+}
+
+[data-theme="light"] .bg-neutral-900,
+.light .bg-neutral-900,
+[data-theme="light"] .bg-neutral-800,
+.light .bg-neutral-800 {
+  background-color: #EFEBE3 !important;
+}
+
+[data-theme="light"] .bg-neutral-900\/30,
+[data-theme="light"] .bg-neutral-900\/40,
+[data-theme="light"] .bg-neutral-900\/50,
+[data-theme="light"] .bg-neutral-900\/60,
+[data-theme="light"] .bg-neutral-900\/80,
+[data-theme="light"] .bg-neutral-950\/70,
+[data-theme="light"] .bg-neutral-950\/80,
+[data-theme="light"] .bg-neutral-950\/90,
+.light .bg-neutral-900\/30,
+.light .bg-neutral-900\/40,
+.light .bg-neutral-900\/50,
+.light .bg-neutral-900\/60,
+.light .bg-neutral-900\/80,
+.light .bg-neutral-950\/70,
+.light .bg-neutral-950\/80,
+.light .bg-neutral-950\/90 {
+  background-color: rgba(239, 235, 227, 0.88) !important;
+}
+
+[data-theme="light"] .text-white,
+.light .text-white {
+  color: #1c1917 !important;
+}
+
+[data-theme="light"] .text-neutral-100,
+.light .text-neutral-100 {
+  color: #292524 !important;
+}
+
+[data-theme="light"] .text-neutral-200,
+.light .text-neutral-200 {
+  color: #44403c !important;
+}
+
+[data-theme="light"] .text-neutral-300,
+.light .text-neutral-300 {
+  color: #57534e !important;
+}
+
+[data-theme="light"] .text-neutral-400,
+.light .text-neutral-400 {
+  color: #78716c !important;
+}
+
+[data-theme="light"] .text-neutral-500,
+.light .text-neutral-500 {
+  color: #877e76 !important;
+}
+
+[data-theme="light"] .border-amber-500\/10,
+[data-theme="light"] .border-amber-500\/15,
+[data-theme="light"] .border-amber-500\/20,
+[data-theme="light"] .border-amber-500\/25,
+[data-theme="light"] .border-amber-500\/30,
+[data-theme="light"] .border-amber-500\/40,
+.light .border-amber-500\/10,
+.light .border-amber-500\/15,
+.light .border-amber-500\/20,
+.light .border-amber-500\/25,
+.light .border-amber-500\/30,
+.light .border-amber-500\/40 {
+  border-color: rgba(217, 119, 6, 0.28) !important;
+}
+
+[data-theme="light"] .border-white\/5,
+[data-theme="light"] .border-white\/10,
+[data-theme="light"] .border-white\/20,
+.light .border-white\/5,
+.light .border-white\/10,
+.light .border-white\/20 {
+  border-color: rgba(120, 113, 108, 0.25) !important;
+}
+
+[data-theme="light"] .bg-white\/3,
+[data-theme="light"] .bg-white\/5,
+[data-theme="light"] .bg-white\/10,
+.light .bg-white\/3,
+.light .bg-white\/5,
+.light .bg-white\/10 {
+  background-color: rgba(217, 119, 6, 0.09) !important;
 }
 
 @keyframes float {
@@ -101,8 +214,8 @@ body {
 .bg-grid-pattern {
   background-size: 36px 36px;
   background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(to right, rgba(217, 119, 6, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(217, 119, 6, 0.05) 1px, transparent 1px);
 }
 
 /* subtle grain texture overlay */
@@ -117,14 +230,14 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #080808;
+  background: var(--background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #262626;
+  background: var(--surface-border);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #d97706;
+  background: var(--accent);
 }

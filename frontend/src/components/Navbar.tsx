@@ -17,8 +17,12 @@ import {
   Zap,
   LogIn,
   Home,
+  Sun,
+  Moon,
+  Info,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { useTheme } from './ThemeProvider'
 
 interface NavLink {
   label: string
@@ -35,11 +39,13 @@ const navLinks: NavLink[] = [
   { label: 'Teachers', href: '/top-teachers', icon: GraduationCap },
   { label: 'Originals', href: '/originals', icon: Flame, badge: 'HOT' },
   { label: 'Timer', href: '/timer', icon: Timer },
+  { label: 'About', href: '/about', icon: Info },
 ]
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
+  const { theme, toggleTheme } = useTheme()
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/'
@@ -110,8 +116,18 @@ export default function Navbar() {
             })}
           </ul>
 
-          {/* CTAs */}
+          {/* CTAs & Theme Toggle */}
           <div className="flex items-center gap-2.5 sm:gap-3">
+            {/* Dark/Light Theme Switcher */}
+            <button
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+              title={theme === 'dark' ? 'Switch to Soft Oat Light Mode' : 'Switch to Dark Mode'}
+              className="flex h-9 w-9 items-center justify-center rounded-xl border border-amber-500/20 bg-amber-500/10 text-amber-400 transition-all duration-200 hover:border-amber-500/50 hover:bg-amber-500/20 hover:scale-105 active:scale-95"
+            >
+              {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </button>
+
             {/* Upgrade Button */}
             <Link
               href="/subscription"
@@ -121,7 +137,7 @@ export default function Navbar() {
               <span>Upgrade</span>
             </Link>
 
-            {/* Sign In Link (hidden on the smallest screens, still reachable via mobile drawer) */}
+            {/* Sign In Link */}
             <Link
               href="/login"
               className={`hidden items-center gap-1.5 text-xs font-semibold transition-colors px-2.5 py-1.5 min-[420px]:flex ${
@@ -186,18 +202,17 @@ export default function Navbar() {
                       )}
                     </Link>
                   </li>
-                )
+                );
               })}
 
               <li className="pt-2 border-t border-white/10 flex items-center justify-between gap-3">
-                <Link
-                  href="/subscription"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 py-2.5 text-xs font-bold text-amber-300"
+                <button
+                  onClick={toggleTheme}
+                  className="flex-1 flex items-center justify-center gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 py-2.5 text-xs font-bold text-amber-300"
                 >
-                  <Zap className="h-3.5 w-3.5 text-amber-400" />
-                  <span>Upgrade Plan</span>
-                </Link>
+                  {theme === 'dark' ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
+                  <span>{theme === 'dark' ? 'Soft Oat Mode' : 'Dark Mode'}</span>
+                </button>
                 <Link
                   href="/login"
                   onClick={() => setMobileMenuOpen(false)}
